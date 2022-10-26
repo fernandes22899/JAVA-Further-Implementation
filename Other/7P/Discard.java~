@@ -1,0 +1,39 @@
+import java.util.ArrayList;
+import java.util.Stack;
+//----------------------------------
+public class DiscardMove implements Move
+{
+    private Card card = null;
+    private GameState gameState;
+    private int pileIndex;
+    /**
+     * DiscardMove constructor.
+     * @param gameState GameState
+     * @param pileIndex int
+     * 
+     * */
+    public DiscardMove( GameState gameState, int pileIndex ) 
+    {
+        this.gameState = gameState;
+        this.pileIndex = pileIndex;
+    }
+    
+    
+    /**
+     * moveState method.
+     * @return newGameState 
+     * */
+    
+    public GameState movedState() 
+    {
+        ArrayList< Stack<Card> > piles = gameState.getPiles();
+        Stack<Card> discardPile = gameState.getDiscardPile();
+        
+        card = piles.get( pileIndex ).peek();
+        discardPile.push( piles.get( pileIndex ).pop() );
+        
+        GameState newGameState = new GameState( gameState.getDrawPile(), 
+                                               piles, discardPile );
+        return newGameState;
+    }
+}

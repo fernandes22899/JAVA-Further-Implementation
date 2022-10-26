@@ -1,0 +1,15 @@
+# Test input file for program 7I
+a = 3
+a
+b = 4
+   b
+   c = a + b + 34.5
+
+   c = ( a + b ) * d
+  ( a + b ) * c
+
+  able = longNames + are - justFine * with / Number3_and_more4
+
+  _able = this + should + _be just file
+  E format floating point constants should be fine 
+  3.4e9

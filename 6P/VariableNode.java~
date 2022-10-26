@@ -1,0 +1,18 @@
+public class VariableNode extends TreeNode
+{
+    protected TreeNode left = null;
+    protected TreeNode right = null;
+    SymbolTable st = new SymbolTable();
+    
+    public VariableNode()
+    {
+        
+    }
+    
+    public float evaluate()
+    {
+    
+        return 0.0f;
+    }
+    
+}

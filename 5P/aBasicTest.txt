@@ -1,0 +1,7 @@
+# Test input file for program 5P
+   a = 3
+   a
+   b = 4
+   b
+   c = a + b
+  ( a + b ) * c

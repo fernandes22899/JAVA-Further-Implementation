@@ -1,0 +1,48 @@
+/**
+ * Constant-thisclassrepresents anumber nodewhich isa subclassofTreeNode.
+ *
+ * @author abdulla
+ */
+public class NumberNode extends TreeNode 
+{
+    
+    private Number num;
+    /**
+     * NymberNode constructor.
+     * @param num Number
+     * 
+     * 
+     * */
+    public NumberNode( Number num )
+    {
+        super( null, null );
+        this.num = num;
+    }
+    
+    @Override
+    /**
+     * floating.
+     * @param symTable SymblTable
+     * 
+     * */
+    float evaluate( SymbolTable symTable ) 
+    {
+        return num.floatValue();
+    }
+    
+    @Override
+    /**
+     * print.
+     * @param depth int
+     * @return s
+     * */
+    String print( int depth ) 
+    {
+        String s = "\t";
+        for( int i = 0; i < depth * 2; i++ )
+            s += " ";
+        s += num.floatValue() + "";
+        return s;
+    }
+    
+}

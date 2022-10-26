@@ -1,0 +1,132 @@
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+/**
+ * 
+ */
+public class First implements AShape
+{
+    //----------------instance variables------------
+    AEllipse    head;
+    ARectangle  body;
+    ALine       neck;
+    ARoundRectangle leftArm;
+    ARoundRectangle rightArm;
+    int x, y;
+    Color bodyColor = Color.RED;
+    
+    public First()
+    {
+        head = new AEllipse();
+        head.setSize( 30, 30 );
+        head.setFrameColor( Color.BLACK );
+        head.setFillColor( Color.GRAY );
+        
+        body = new ARectangle();
+        body.setSize( 40, 60 );
+        body.setFrameColor( Color.BLACK );
+        body.setFillColor( Color.GRAY );
+        
+        neck = new ALine( x + 40, y + 20, x + 40, y + 30 );
+        neck.setColor( Color.BLACK );
+        
+        leftArm = new ARoundRectangle();
+        leftArm.setSize( 30, 15 );
+        leftArm.setFrameColor( Color.BLACK );
+        leftArm.setFillColor( Color.GRAY );
+        
+        rightArm = new ARoundRectangle();
+        rightArm.setSize( 30, 15 );
+        rightArm.setFrameColor( Color.BLACK );
+        rightArm.setFillColor( Color.GRAY );
+        
+        setLocation( 0, 0 );
+    }
+    
+    public First( int xLoc, int yLoc )
+    {
+        this.setLocation( xLoc, yLoc );
+    }
+    
+    public First( Color c )
+    {
+        this.setColor( c );
+    }
+    
+    public void setColor( Color c )
+    {
+        bodyColor = c;
+        
+        body.setFillColor( c );
+        head.setFillColor( c );
+        leftArm.setFillColor( c );
+        rightArm.setFillColor( c );
+    }
+    
+    public void setLocation( int xLoc, int yLoc )
+    {
+        this.x = xLoc;
+        this.y = yLoc;
+        
+        head.setLocation( x, y + 60 );
+        body.setLocation( x + 60, y + 60 );
+        leftArm.setLocation( x + 10, y + 15 );
+        rightArm.setLocation( x + 15, y + 40 );
+        neck.setPoints( x + 40, y + 30 , x + 40, y - 20 );
+    }
+    
+    public int getXLocation()
+    {
+        return x;
+    }
+    
+    public int getYLocation()
+    {
+        return y;
+    }
+    
+    public Color getColor()
+    {
+        return bodyColor;
+    }
+    
+    public void display( java.awt.Graphics2D brush )
+    {
+        head.display( brush );
+        body.display( brush );
+        neck.display( brush );
+        leftArm.display( brush );
+        rightArm.display( brush );
+    }
+    
+    public static void main( String[] args)
+    {
+        JFrame frame = new JFrame( "First Test" );
+        frame.setSize( 400, 300 );
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        
+        final First rob = new First( Color.BLUE );
+        
+        final First rob2 = new First( 130, 130 );
+        rob2.setColor( Color.GREEN );
+        
+        final First rob3 = new First();
+        rob3.setLocation( rob.getXLocation(), rob2.getYLocation() );
+        rob3.setColor( rob2.getColor() );
+        
+        JPanel jp = new JPanel()
+        {
+            public void paintComponent( Graphics g )
+            {
+                rob.display( (Graphics2D) g );
+                rob2.display( (Graphics2D) g );
+                rob3.display( (Graphics2D) g );
+            }
+        }; 
+        frame.add( jp );        // add it to the frame
+        frame.setVisible( true );  // make it visible.     
+        
+    }
+}

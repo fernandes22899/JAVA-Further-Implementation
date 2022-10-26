@@ -1,0 +1,141 @@
+/** 
+ * JSnowMan.java:
+ * 
+ * Displays a simple snow man using the A-wrappers for awt implementation.
+ * This class is also an AShape since it implements the AShape interface.
+ * 
+ * @author rdb
+ * Created 9/11/07; derived from cs415 demo program, Start.java 
+ * Last modified: rdb 01/22/13 to make JSnowMan an AShape and to use 
+ *                an ArrayList
+ */
+import java.awt.*;
+import java.util.*;
+
+public class JSnowMan implements AShape
+{
+    //---------------- instance variables ------------------------------
+    // Components need to be accessed when displaying, put them into a list
+    private ArrayList<AShape> aObjects;
+    
+    // -----------------------------------------------------------------
+    /** 
+     * Constructor for the JSnowMan class. Arguments are the position.
+     */
+    public JSnowMan( int x, int y )
+    {
+        // create the list to hold all the A-components of the JSnowMan
+        aObjects = new ArrayList<AShape>();
+        
+        // local variables define location/sizes of components
+        int    hatX   = 38;
+        int    hatY   = 0;
+        int    hatW   = 25;
+        int    hatH   = 13;
+        
+        int    headX     = 25;
+        int    headY     = hatY + hatH;
+        int    headSize  = 50;
+        
+        int    bodyX     = 10;
+        int    bodyY     = headY + headSize - 10;
+        int    bodySize  = 80; 
+        
+        int    mouthX    = 40;
+        int    mouthY    = headY + 30;
+        
+        int[]  smileX     = { 0, 5, 15, 20 };
+        int[]  smileY     = { 0, 2, 2, 0 };
+        
+        int    leftEyeX  = 40;
+        int    leftEyeY  = headY + 15;
+        int    rightEyeX = 55;
+        int    rightEyeY = leftEyeY;
+        int    eyeSize   = 4;
+        
+        int    brimX  = headX + 5;
+        int    brimY  = headY;
+        int    brimW = headSize - 10;
+        int    brimH = 4;
+        
+        int    lArmX1 =  0;
+        int    lArmY1 = leftEyeY;
+        int    lArmX2 = bodyX + 5;
+        int    lArmY2 = bodyY + 20;
+        
+        int    rArmX1 = bodyX + bodySize - 5;
+        int    rArmY1 = lArmY2;
+        int    rArmX2 = bodyX + bodySize + 40;
+        int    rArmY2 = mouthY + 14;
+        
+        // create the head
+        JEllipse head = new JEllipse( x + headX, y + headY );
+        head.setSize( headSize, headSize );
+        head.setFillColor( Color.WHITE );
+        aObjects.add( head );
+        
+        // create the two eyes
+        JEllipse leftEye = new JEllipse( x + leftEyeX, y + leftEyeY );
+        leftEye.setColor( Color.BLACK );
+        leftEye.setSize( eyeSize, eyeSize );
+        aObjects.add( leftEye );
+        
+        JEllipse rightEye = new JEllipse( x + rightEyeX, y + rightEyeY );
+        rightEye.setColor( Color.BLACK );
+        rightEye.setSize( eyeSize, eyeSize );
+        aObjects.add( rightEye );
+        
+        // create a smile
+        JLine smilePart;
+        for ( int i = 0; i < smileX.length - 1; i++ )
+        {
+            smilePart = new JLine( Color.BLACK );
+            smilePart.setPoints(  x + mouthX + smileX[ i ], 
+                                y + mouthY + smileY[ i ], 
+                                x + mouthX + smileX[ i + 1 ], 
+                                y + mouthY + smileY[ i + 1 ] );
+            smilePart.setLineWidth( 2 );
+            aObjects.add( smilePart );
+        }
+        
+        // create the hat and its brim
+        JRectangle hatBody = new JRectangle( x + hatX, y + hatY );
+        hatBody.setSize( hatW, hatH );
+        hatBody.setColor( Color.BLACK );
+        aObjects.add( hatBody );
+        
+        JRectangle hatBrim = new JRectangle( x + brimX, y + brimY );
+        hatBrim.setSize( brimW, brimH );
+        hatBrim.setColor( Color.BLACK );
+        aObjects.add( hatBrim );
+        
+        // create the body
+        JEllipse body = new JEllipse( x + bodyX, y + bodyY );
+        body.setSize( bodySize, bodySize );
+        body.setFillColor( Color.WHITE );
+        aObjects.add( body );
+        
+        // create some arms
+        JLine leftArm = new JLine( Color.BLACK );
+        leftArm.setPoints( x + lArmX1, y + lArmY1, 
+                          x + lArmX2, y + lArmY2 );
+        leftArm.setLineWidth( 3 );
+        aObjects.add( leftArm );
+        
+        JLine rightArm = new JLine( Color.BLACK  );
+        rightArm.setPoints( x + rArmX1, y + rArmY1, 
+                           x + rArmX2, y + rArmY2 );
+        rightArm.setLineWidth( 3 );
+        aObjects.add( rightArm );
+    }
+    // ------------------------ display --------------------------------
+    /** 
+     * Invoke fill and draw methods of all the components
+     */
+    public void display( Graphics2D brush )
+    {
+        for ( AShape aPart: aObjects )
+            aPart.display( brush );
+    }   
+    
+}//End of Class JSnowMan

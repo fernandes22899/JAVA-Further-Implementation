@@ -1,0 +1,71 @@
+/**
+ * abstact class. 
+ * @author Abdulla 
+ * 
+ * */
+public abstract class TreeNode 
+{
+    
+    private TreeNode left;
+    private TreeNode right;
+    /**
+     * TreeNode constuctor. 
+     * @param left TreeNode
+     * @param right TreeNode
+     * */
+    public TreeNode( TreeNode left, TreeNode right ) 
+    {
+        this.left = left;
+        this.right = right;
+    }
+    /**
+     * tree node get left method. 
+     * @return left
+     * 
+     * */
+    public TreeNode getLeft() 
+    {
+        return left;
+    }
+    /**
+     * tree node get right method. 
+     * @return right
+     * 
+     * */
+    public TreeNode getRight() 
+    {
+        return right;
+    }
+    /**
+     * tree node setleft method. 
+     * @param left TreeNode
+     * 
+     * */
+    public void setLeft( TreeNode left ) 
+    {
+        this.left = left;
+    }
+    /**
+     * tree node get set right method. 
+     * @param right TreeNode
+     * 
+     * */
+    public void setRight( TreeNode right ) 
+    {
+        this.right = right;
+    }
+    /**
+     * evaluation.
+     * @param symTable symolTable
+     * @return symTable
+     * */
+    abstract float evaluate( SymbolTable symTable );
+    /**
+     * printing.
+     * @param depth int
+     * @return depth
+     *
+     * 
+     * */
+    abstract String print( int depth );
+}

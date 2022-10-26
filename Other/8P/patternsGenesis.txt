@@ -1,0 +1,9 @@
+[Aa]nd\sthe
+[Aa]nd\sthe\s
+^.*the.*$
+^.*\sthe\s.*$
+Earth|earth
+(.)\1
+and
+And
+[,\.]\s+\w+\s

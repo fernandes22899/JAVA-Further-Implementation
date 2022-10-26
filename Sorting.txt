@@ -1,0 +1,5 @@
+Bubble Sort-Swaps elements to put in order. Large values towards top and low values towards bottom. O(n^2)
+Selection Sort- select smallest and move it to the front. O(n^2)
+Insertion Sort- Goes through each value in input and sorts it in the end. O(n^2)
+Merge Sort- Breaks down to groups and sorts those groups. O(n log n)
+Quicksort/Split Sort- Chooses values to pivot around until sorted.O(n log n)

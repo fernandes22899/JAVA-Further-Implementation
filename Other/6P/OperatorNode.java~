@@ -1,0 +1,102 @@
+/**
+ * Operator this class represents an operator nodethat isa subclass ofTreeNode.
+ *
+ * @author abdulla
+ */
+public class OperatorNode extends TreeNode 
+{
+    
+    private char op;
+    /**
+     * Operator node.
+     * @param op char
+     * 
+     * */
+    public OperatorNode( char op )
+    {
+        super( null, null );
+        this.op = op;
+    }
+    /**
+     * OperatorNode.
+     * @param op char
+     * @param left TreeNode
+     * @param right TreeNode
+     * 
+     * */
+    public OperatorNode( char op, TreeNode left, TreeNode right )
+    {
+        super( left, right );
+        this.op = op;
+    }
+    
+    
+    @Override
+    public String toString() 
+    {
+        return "<" + op + ">";
+    }
+    /**
+     * getOp.
+     * @return op
+     * 
+     * */
+    public char getOp() 
+    {
+        return op;
+    }
+    
+    @Override
+    float evaluate( SymbolTable symTable ) 
+    {
+        float result = 0;
+        TreeNode left = getLeft();
+        TreeNode right = getRight();
+        switch( op ) 
+        {
+            case '+':
+                result = left.evaluate( symTable ) + right.evaluate( symTable );
+                break;
+            case '-':
+                result = left.evaluate( symTable ) - right.evaluate( symTable );
+                break;
+            case '*':
+                result = left.evaluate( symTable ) * right.evaluate( symTable );
+                break;
+            case '/':
+                result = left.evaluate( symTable ) / right.evaluate( symTable );
+                break;
+            case '%':   
+                result = left.evaluate( symTable ) % right.evaluate( symTable );
+                break;
+            case '=':
+                String var = ( ( VariableNode )left ).getVarName();
+                float num = right.evaluate( symTable );
+                symTable.setValue( var, num );
+                result = num;
+                break;
+        }
+        return result;
+    }
+    
+    @Override
+    String print( int depth ) 
+    {
+        String s = "";
+        TreeNode left = getLeft();
+        TreeNode right = getRight();
+        
+        if( left != null )
+            s = left.print( depth + 1 );
+        s += "\n";
+        s += "\t";
+        for( int i = 0; i < depth * 2; i++ )
+            s += " ";
+        s += op + "\n";
+        
+        if( right != null )
+            s += right.print( depth + 1 );
+        return s;
+    }
+    
+}

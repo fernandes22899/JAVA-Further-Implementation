@@ -1,0 +1,199 @@
+import javax.swing.*;
+import java.util.*;
+import java.io.*;
+
+/**
+ * Interpreter.java - parses string input representing an infix arithmetic
+ *                 expression into tokens, and builds an expression tree.
+ *                 The expression can use the operators =, +, -, *, /, %.
+ *                 and can contain arbitrarily nested parentheses.
+ *                 The = operator is assignment and must be absolutely lowest
+ *                 precedence.
+ * March 2013
+ * @author rdb
+ */
+public class Interpreter //extends JFrame
+{
+    //----------------------  class variables  ------------------------
+    Stack st = new Stack();
+    //---------------------- instance variables ----------------------
+    private boolean      _printTree = true;  // if true print tree after each
+    //    expression tree is built 
+
+    //----------- constants
+   
+    //--------------------------- constructor -----------------------
+    /**
+     * If there is a command line argument use it as an input file.
+     * otherwise invoke an interactive dialog.
+     *
+     * @param args Array of arguments.
+     */
+    public Interpreter( String[] args ) 
+    {      
+        if ( args.length > 0 )
+            processFile( args[ 0 ] );
+        else
+            interactive();      
+    }
+    //--------------------- processFile -----------------------------
+    /**
+     * Given a String containing a file name, open the file and read it.
+     * Each line should represent an expression to be parsed.
+     *
+     * @param fileName File name.
+     */
+    public void processFile( String fileName )
+    {
+        try
+        {
+            Scanner scan = new Scanner( new FileReader( fileName ) );
+            String line;
+            
+            while( scan.hasNextLine() )
+            {
+                line = scan.nextLine();
+                if( !line.equals( "" ) )
+                {
+                    line = line.trim();
+                    processLine( line );
+                }
+            }
+            
+            scan.close();
+        }
+        catch( Exception e )
+        {
+            System.out.println( "Error: " + e );
+        }
+    }
+    //--------------------- processLine -----------------------------
+    /**
+     * Parse each input line -- it shouldn't matter whether it comes from
+     * the file or the popup dialog box. It might be convenient to return
+     * return something to the caller in the form of a String that can
+     * be printed or displayed.
+     *
+     * @param line Input line.
+     *
+     * @return Processed line.
+     */
+    public String processLine( String line )
+    {
+        
+        //System.out.println(  "Input: " + line );
+        String trimmed = line.trim();
+        if ( trimmed.length() == 0 )
+            return line;
+        for( int i = 0; i < trimmed.length(); i++ )
+        {
+            if( line.charAt( i ) == '+'  || line.charAt( i ) == '-' 
+              || line.charAt( i ) == '/' || line.charAt( i ) == '*' )
+                st.push( i );
+            else if( line.charAt( i ) == '(' )
+                st.push( i );
+            else if( line.charAt( i ) == ')' )
+            {
+                while( st.top() != '(' )
+                    pushOpNode( st.pop() );
+                
+                st.pop();
+            }
+            else
+            {
+                while( st != null )
+                    pushOpNode( st.pop() );
+                
+                st.push( i );
+            }
+            
+        }
+        while( st != null )
+            pushOpNode( opStack.pop() );
+        
+        
+        return "";
+    }
+    
+    /**Helper method to infix to tree.
+     * @param n Node
+     */
+    public void pushOpNode( OporatorNode op )
+    {
+        //OporatorNode op = new OporatorNode();
+        op.right = st.pop();
+        op.left = st.pop();
+        st.push( op );
+        
+    }
+    //--------------------- interactive -----------------------------
+    /**
+     * Use a file chooser to get a file name interactively, then 
+     * go into a loop prompting for expressions to be entered one
+     * at a time.
+     */
+    public void interactive()
+    {
+        JFileChooser fChooser = new JFileChooser( "." );
+        fChooser.setFileFilter( new TextFilter() );
+        int choice = fChooser.showDialog( null, "Pick a file of expressions" );
+        if ( choice == JFileChooser.APPROVE_OPTION )
+        {
+            File file = fChooser.getSelectedFile();
+            if ( file != null )
+                processFile( file.getName() );
+        }
+      
+        String prompt = "Enter an arithmetic expression: ";
+        String expr = JOptionPane.showInputDialog( null, prompt );
+        while ( expr != null && expr.length() != 0 )
+        {
+            String result = processLine( expr );
+            JOptionPane.showMessageDialog( null, expr + "\n" + result );
+            expr = JOptionPane.showInputDialog( null, prompt );
+        }
+    }
+
+    //+++++++++++++++++++++++++ inner class +++++++++++++++++++++++++++++++
+    //---------------------------- TextFilter -----------------------------
+    /**
+     * This class is used with FileChooser to limit the choice of files
+     * to those that end in *.txt.
+     */
+    public class TextFilter extends javax.swing.filechooser.FileFilter
+    {
+        /**
+         * Test whether file is acceptable type.
+         *
+         * @param f File descriptor.
+         *
+         * @return indication of whether file is acceptable.
+         */
+        public boolean accept( File f ) 
+        {
+            if ( f.isDirectory() || f.getName().matches( ".*txt" ) )
+                return true;
+            return false;
+        }
+        /**
+         * Describe which files can be selected.
+         *
+         * @return the description.
+         */
+        public String getDescription()
+        {
+            return "*.txt files";
+        }
+    }
+    //--------------------- main -----------------------------------------
+    /**
+     * Main method.
+     *
+     * @param args Array of arguments.
+     *
+     */
+    public static void main( String[] args )
+    {
+        Interpreter app = new Interpreter( args );
+    }
+}

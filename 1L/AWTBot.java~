@@ -1,0 +1,304 @@
+//+++++++++++++++++++++++++++++ AWTBot.java +++++++++++++++++++++++++++++
+//import wheelsunh.users.*;
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+
+/** 
+ * AWTBot.java: A simple 2D image of a robot.
+ * 
+ * @author rdb
+ * 
+ * Last edited:
+ *     01/13/15 rdb: make checkstyle-compatible  
+ *                   added coverage computation
+ */
+
+public class AWTBot implements AShape
+{ 
+    //---------------- class variables ---------------------------------
+    //--- primitive "coverage" information
+    /**
+     * CoverageID enum provides a mnemonic code to represent each public method
+     *   except display. The display method is not called directly by the app;
+     *   it is called asynchronously by the JRE, so it's not guaranteed that
+     *   its coverage will get logged before the report is generated.
+     */
+    private static enum CoverageID 
+    {
+        ctor_, ctor_ii, ctor_c, setColor_c, setLoc_ii, getX, getY, getColor 
+    };
+    static boolean[] coverageFlag = // should be same length as enum size (8)
+    { false, false, false, false, false, false, false, false };
+    
+    //---------------- instance variables ------------------------------
+    AEllipse    body;
+    ARectangle  wheel1;
+    ARectangle  wheel2;
+    ARectangle  caster;
+    ARectangle  head;
+    ARectangle  sensor;
+    ALine       antenna;
+    
+    int         x, y;
+    Color       bodyColor = java.awt.Color.BLUE;
+    
+    // ---------------------- AWTBot() ----------------------------------
+    /** The constructor creates all the robot parts, and sets a default
+      * location and body color (BLUE).
+      */
+    public AWTBot()
+    {   
+        wheel1 = new ARectangle();   
+        wheel1.setSize( 20, 30 );
+        wheel1.setFrameColor( java.awt.Color.BLACK );
+        wheel1.setFillColor( java.awt.Color.BLACK );
+        
+        wheel2 = new ARectangle();     
+        wheel2.setSize( 20, 30 );
+        wheel2.setFillColor( java.awt.Color.BLACK );
+        wheel2.setFrameColor( java.awt.Color.BLACK );
+        
+        caster = new ARectangle();    
+        caster.setSize( 16, 20 );
+        caster.setFillColor( java.awt.Color.BLACK );
+        caster.setFrameColor( java.awt.Color.BLACK );
+        
+        body = new AEllipse(); 
+        body.setSize( 60, 60 );
+        body.setFrameColor( java.awt.Color.BLACK );
+        body.setFillColor( bodyColor );
+        
+        head = new ARectangle();   
+        head.setSize( 50, 5 );
+        head.setFillColor( java.awt.Color.GREEN );
+        head.setFrameColor( java.awt.Color.BLACK );
+        
+        sensor = new ARectangle();  
+        sensor.setSize( 10, 10 );
+        sensor.setFillColor( java.awt.Color.RED );
+        sensor.setFrameColor( java.awt.Color.BLACK );
+        
+        antenna = new ALine( x + 40, y + 30 , x + 40, y + 20 );  
+        antenna.setColor( java.awt.Color.BLUE );
+        
+        setLocation( 0, 0 );
+        
+        covered( CoverageID.ctor_ ); 
+    }
+    
+    // ------------------- AWTBot( int, int ) ---------------------------
+    /**
+     * Constructor includes an explicit location and default color.
+     * 
+     * @param xLoc int x-location
+     * @param yLoc int y-location
+     */
+    public AWTBot( int xLoc, int yLoc )
+    {   
+        this();
+        setLocation( xLoc, yLoc );
+              
+        covered( CoverageID.ctor_ii ); 
+    }
+    
+    // ---------------------- AWTBot( Color ) --------------------------
+    /** 
+     * Constructor includes explicit color and default location ( 0,0 ).
+     * 
+     * @param c Color body color
+     */
+    public AWTBot( Color c )
+    {   
+        this();
+        setColor( c );
+        
+        covered( CoverageID.ctor_c ); 
+    }
+    
+    //--------------------- setColor( Color ) ------------------------- 
+    /**
+     * set body color to parameter and default colors for all other parts.
+     * 
+     * @param c Color body color
+     */
+    public void setColor( Color c )
+    {
+        bodyColor = c;
+        body.setFillColor( c );
+
+        covered( CoverageID.setColor_c ); 
+    }
+    
+    //------------------- setLocation( int, int ) --------------------- 
+    /**
+     * set the location of the robot to the paramters.
+     * 
+     * @param xLoc int  x-location
+     * @param yLoc int  y-locaation
+     */
+    public void setLocation( int xLoc, int yLoc )
+    {
+        this.x = xLoc;
+        this.y = yLoc;
+        
+        wheel1.setLocation( x, y + 60 );
+        wheel2.setLocation( x + 60, y + 60 );
+        caster.setLocation( x + 32, y );
+        body.setLocation( x + 10, y + 15 );
+        head.setLocation( x + 15, y + 40 );
+        sensor.setLocation( x + 35, y + 30 );
+        antenna.setPoints( x + 40, y + 30 , x + 40, y - 20 );
+        
+        covered( CoverageID.setLoc_ii ); 
+    }
+    
+    //--------------------- int getXLocation() ------------------------
+    /**
+     * return the x location of the robot.
+     * 
+     * @return int x location
+     */
+    public int getXLocation()
+    {
+        covered( CoverageID.getX ); 
+        return x;       
+    }
+    
+    //--------------------- int getYLocation() ------------------------
+    /**
+     * return the y location of the robot.
+     * 
+     * @return int y location
+     */
+    public int getYLocation()
+    {
+        covered( CoverageID.getY ); 
+        return y;    
+    }
+    
+    //--------------------- int getColor() ----------------------------
+    /**
+     * return the body color of the robot.
+     * 
+     * @return Color body color
+     */
+    public Color getColor()
+    {
+        covered( CoverageID.getColor );
+        return bodyColor;    
+    }
+    
+    //----------------------- display( Graphics2D ) -------------------
+    /**
+     * display - calls draw and fill awt methods (this is an rdb method).
+     * 
+     * @param brush2D  java.awt.Graphics2D 
+     */
+    public void display( java.awt.Graphics2D brush2D )
+    {
+        ///////////////////////////////////////////////////////////////
+        // For every A-object created in the AWTBot constructor (7)
+        //   invoke that object's display method with "brush2D" as the 
+        //   the parameter:
+        //   body, wheel1, wheel2, caster, head, sensor, antenna.
+        ///////////////////////////////////////////////////////////////
+        body.display( brush2D );
+        wheel1.display( brush2D );
+        wheel2.display( brush2D );
+        caster.display( brush2D );
+        head.display( brush2D );
+        sensor.display( brush2D );
+        antenna.display( brush2D );
+        
+    }
+    //---------------------- covered( String ) ---------------------------
+    /**
+     * Confirm that a method has been called, but finding its code in the
+     * coverage string and capitalizing it.
+     * 
+     * @param mId CoverageID
+     */
+    private static void covered( CoverageID mId )
+    {
+        coverageFlag[ mId.ordinal() ] = true;
+    }   
+    //---------------------- coverageInfo() ---------------------------
+    /**
+     * Return a string describing the current state of coverage information.
+     * 
+     * @return String
+     */
+    private static String coverageInfo()
+    {
+        int methodCount = coverageFlag.length;
+        int count = 0;
+        for ( int i = 0; i < coverageFlag.length; i++ )
+        {
+            if ( coverageFlag[ i ] )
+                count++;
+        }
+        System.out.println();
+        
+        return count + " of " + methodCount + " methods called.";
+    }   
+    
+    //------------------------  main ----------------------------------
+    /**
+     * Unit test for AWTBot.
+     * 
+     * @param args String[] Command line araguments
+     */
+    public static void main( String[] args )
+    {
+        JFrame frame = new JFrame( "AWTBot test" );
+        frame.setSize( 400, 300 );  // define window size
+        
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        
+        // AWTBot variables need to be "final" in order to be accessed 
+        //   inside the implicitly declared anonymous class that extends 
+        //   JPanel below.
+        
+        // Minimal test: use each constructor
+        final AWTBot bot1 = new AWTBot( Color.RED );
+        
+        //////////////////////////////////////////////////////////
+        // Create at least 2 additional AWTBots.
+        //   You must use every method of AWTBot at least once, including the
+        //   "get" methods. The coverage is printed at the end; all output 
+        //   should be all caps if you have satisfied this requirement.
+        ///////////////////////////////////////////////////////////
+        final AWTBot bot2 = new AWTBot( 200, 200 );
+        bot2.setColor( Color.GREEN );
+        
+        
+        final AWTBot bot3 = new AWTBot();
+        bot3.setLocation( bot1.getXLocation(), bot2.getYLocation() );
+        bot3.setColor( bot2.getColor() );
+        coverageInfo();
+        
+       
+        // Create anonymous JPanel child w/ override for paintComponent
+        JPanel panel = new JPanel()
+        {
+            public void paintComponent( Graphics g )
+            {
+                bot1.display( (Graphics2D) g );
+                ///////////////////////////////////////////////////
+                // invoke display method of the 2nd and 3rd AWTBot
+                //       objects.
+                ///////////////////////////////////////////////////
+                bot2.display( (Graphics2D) g );
+                bot3.display( (Graphics2D) g );
+                
+                
+            }
+        }; 
+        frame.add( panel );        // add it to the frame
+        frame.setVisible( true );  // make it visible.        
+        
+        System.out.println( "AWTBOT coverage info: " + AWTBot.coverageInfo() );
+    }
+}

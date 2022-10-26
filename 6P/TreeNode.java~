@@ -1,0 +1,7 @@
+public abstract class TreeNode
+{
+    //variables
+    protected TreeNode left = null;
+    protected TreeNode right = null;
+    public abstract float evaluate();
+}

@@ -1,0 +1,254 @@
+import javax.swing.*;
+import java.util.*;
+import java.io.*;
+
+/**
+ * Lexer.java - parses string input representing an infix arithmetic
+ *              expression into tokens.
+ *              The expression can use the operators =, +, -, *, /, %.
+ *              and can contain arbitrarily nested parentheses.
+ *              The = operator is assignment and must be absolutely lowest
+ *              precedence.
+ * March 2009
+ * @author rdb
+ * March 2016
+ * ah: Simplified to do just lexical analysis.
+ */
+public class Lexer //extends JFrame
+{
+    //----------------------  class variables  ------------------------
+
+    //---------------------- instance variables ----------------------
+    private ArrayList<String> lines;
+    private ArrayList<String> lines2;
+    private SymbolTable  _symbolTable;
+    //private Character[] capitals = new Character[ 25 ];
+    //private Character[] lowerCase = new Character[ 25 ];
+    //private Character[] operands = new Character[ 5 ];
+    //----------- constants
+    private String   dashes = " ---------------------------- ";
+    private String   endOutputBlock =
+        "====================================================================";
+
+    //--------------------------- constructor -----------------------
+    /**
+     * Create the Lexer.
+     * If there is a command line argument use it as an input file.
+     * otherwise invoke an interactive dialog.
+     *
+     * @param args Array of arguments.
+     */
+    public Lexer( String[] args )
+    {
+        _symbolTable = SymbolTable.instance();
+
+        if ( args.length > 0 )
+            processFile( args[ 0 ] );
+        else
+            interactive();
+    }
+    //--------------------- processFile -----------------------------
+    /**
+     * Given a String containing a file name, open the file and read it.
+     * Each line should represent an expression to be parsed.
+     * For each line, process it, and print the result to System.out.
+     *
+     * @param fileName File name.
+     */
+    public void processFile( String fileName )
+    {
+        try
+        {
+            Scanner scan = new Scanner( new FileReader( fileName ) );
+            String line;
+            
+            while( scan.hasNextLine() )
+            {
+                line = scan.nextLine();
+                if( !line.equals( "" ) )
+                {
+                    line = line.trim();
+                    processLine( line );
+                }
+            }
+            
+            scan.close();
+        }
+        catch( Exception e )
+        {
+            System.out.println( "Error: " + e );
+        }
+    }
+
+    //--------------------- processLine -----------------------------
+    /**
+     * Parse each input line and do the right thing; return the
+     *    "results" which can be null.
+     *
+     * @param line Input line.
+     *
+     * @return Line with annotations.
+     */
+    public String processLine( String line )
+    {
+        System.out.println(  "Input: " + line );
+        String trimmed = line.trim();
+        if ( trimmed.length() == 0 || trimmed.charAt( 0 ) == '#' )
+            return line;
+        else
+            return processExpr( trimmed );
+    }
+    //--------------------- interactive -----------------------------
+    /**
+     * Use a file chooser to get an file name interactively, then
+     * go into a loop prompting for expressions to be entered one
+     * at a time.
+     */
+    public void interactive()
+    {
+        JFileChooser fChooser = new JFileChooser( "." );
+        fChooser.setFileFilter( new TextFilter() );
+        int choice = fChooser.showDialog( null, "Pick a file of expressions" );
+        if ( choice == JFileChooser.APPROVE_OPTION )
+        {
+            File file = fChooser.getSelectedFile();
+            if ( file != null )
+                processFile( file.getName() );
+        }
+
+        String prompt = "Enter an arithmetic expression: ";
+        String expr = JOptionPane.showInputDialog( null, prompt );
+        while ( expr != null && expr.length() != 0 )
+        {
+            String result = processLine( expr );
+            JOptionPane.showMessageDialog( null, expr + "\n" + result );
+            expr = JOptionPane.showInputDialog( null, prompt );
+        }
+    }
+    //------------------ processExpr( String ) -------------------------
+    /**
+     * Get all fields in the expression, and
+     * generate tokens for all of them, and
+     * return a String representation of all of them.
+     *
+     * @param line Expression string.
+     *
+     * @return Annotated expression.
+     */
+    public String processExpr( String line )
+    {
+        String now = "";
+        int operator = 0;
+        
+        try
+        {
+            for( int i = 0; i < line.length(); i++ )
+            {
+                operator = ( int )line.charAt( i );
+                
+                if( ( operator >= 65 && operator <= 90 ) 
+                       || ( operator >= 97 && operator <= 122 ) )
+                    now += "@" + line.charAt( i );
+                else if( operator >= 48 && operator <= 57 )
+                    now += "$" + line.charAt( i );
+                else
+                {
+                    switch( operator )
+                    {
+                        case '+':
+                            now += "< + > ";
+                            break;
+                            
+                        case '-':
+                            now += "< - > ";
+                            break;
+                            
+                        case '=':
+                            now += "< = > ";
+                            break;
+                            
+                        case '*':
+                            now += "< * > ";
+                            break;
+                            
+                        case '/':
+                            now += "< / > ";
+                            break;
+                            
+                        case '%':
+                            now += "< % > ";
+                            break;
+                            
+                        case '(':
+                            now += "< ( > ";
+                            break;
+                            
+                        case ')':
+                            now += "< ) > ";
+                            break;
+                    }
+                }
+            }
+        }
+        catch( Exception e )
+        {
+            
+            if( Character.isJavaIdentifierStart( line.charAt( 0 ) ) )
+            {
+                System.out.println( line + "\t\t*Error: Starts" 
+                                       + " with bad character*" );
+            }
+            for( int i = 1; i < line.length(); i++ )
+            {
+                if( Character.isJavaIdentifierPart( line.charAt( i ) ) )
+                    System.out.println( line + "\t\t*Error: Has" 
+                                       + " a bad character*" );
+            }
+            
+        }
+        
+        return now;
+    }
+
+    //---------------------------- TextFilter -----------------------------
+    /**
+     * This class is used with FileChooser to limit the choice of files
+     * to those that end in *.txt.
+     */
+    public class TextFilter extends javax.swing.filechooser.FileFilter
+    {
+        /**
+         * Test whether file is acceptable type.
+         *
+         * @param f File descriptor.
+         *
+         * @return indication of whether file is acceptable.
+         */
+        public boolean accept( File f )
+        {
+            if ( f.isDirectory() || f.getName().matches( ".*txt" ) )
+                return true;
+            return false;
+        }
+        /**
+         * Describe which files can be selected.
+         *
+         * @return the description.
+         */
+        public String getDescription()
+        {
+            return "*.txt files";
+        }
+    }
+    //--------------------- main -----------------------------------------
+    /**
+     * Main method.
+     *
+     * @param args Array of arguments.
+     *
+     */
+    public static void main( String[] args )
+    {
+        Lexer app = new Lexer( args );
+    }
+}

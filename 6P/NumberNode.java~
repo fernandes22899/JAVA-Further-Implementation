@@ -1,0 +1,17 @@
+public class NumberNode extends TreeNode
+{
+    protected TreeNode left = null;
+    protected TreeNode right = null;
+    
+    public NumberNode()
+    {
+        
+    }
+    
+    public float evaluate()
+    {
+        return 0.0f;
+    }
+    
+    
+}

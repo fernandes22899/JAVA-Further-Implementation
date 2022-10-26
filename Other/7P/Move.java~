@@ -1,0 +1,16 @@
+/**
+ * Move class for Aces Up.
+ * 
+ * Encapsulate the information for a Move.
+ *
+ * @author rdb sna4
+ */
+public interface Move
+{    
+    /**
+     * @return game state after movement
+     */
+    public GameState movedState(); 
+    
+}
+

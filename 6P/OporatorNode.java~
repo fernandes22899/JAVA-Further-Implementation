@@ -1,0 +1,48 @@
+public class OporatorNode extends TreeNode
+{
+    protected TreeNode left = null;
+    protected TreeNode right = null;
+    SymbolTable st = new SymbolTable();
+    
+    
+    public float evaluate( String s )
+    {
+        //float f = parseFloat( s );
+        
+        return f;
+    }
+    
+    /*
+    public float eval( TreeNode tn )
+    {
+        if( tn.equals( '+' ) || tn.equals( '-' ) || tn.equals( '*' )
+          || tn.equals( '/' ) || tn.equals( '%' ) )
+            return tn.value;
+        else
+            
+    }
+    */
+    /*
+    private void getLeftMost( OporatorNode node )
+    {
+      if( node == null )
+        return null;
+      
+      if( node.left == null )
+        return left = node;
+      
+      return getLeftMost( node.left );
+    }
+    
+    private void getRightMost( OporatorNode node )
+    {
+      if( node == null )
+        return null;
+      
+      if( node.right == null )
+        return right = node;
+      
+      return getRightMost( node.right );
+    }
+    */
+}
